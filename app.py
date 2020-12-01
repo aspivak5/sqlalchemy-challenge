@@ -90,11 +90,11 @@ def start_date(start):
     return jsonify(start_date)
 
 @app.route("/api/v1.0/<start>/<end>")
-def start_end_date(start,end):
+def start_end_dates(start,end):
     session = Session(engine)
-    start_end_date = session.query(Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).order_by(Measurement.date).all()
+    start_end_dates = session.query(Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).order_by(Measurement.date).all()
     session.close()
-    return jsonify(start_end_date)
+    return jsonify(start_end_dates)
 
 
 if __name__ == "__main__":
