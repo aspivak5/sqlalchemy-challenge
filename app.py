@@ -14,9 +14,6 @@ Base.prepare(engine,reflect = True)
 Measurement = Base.classes.measurement 
 Station = Base.classes.station
 
-
-
-
 year_ago = dt.date(2017,8,23) - dt.timedelta(days =365)
 # print(year_ago)
 
@@ -40,21 +37,21 @@ def precipitation():
     print(last_date)
     results = session.query(Measurement.date,Measurement.prcp).filter(func.strftime('%Y-%m-%d',Measurement.date) >= year_ago).order_by(Measurement.date).all()
     session.close()
-    all_precipitation = []
+    prcp_list = []
     for date,prcp in results:
         prcp_dict = {}
         prcp_dict["date"]= date
         prcp_dict["precipitation(inches)"] = prcp
-        all_precipitation.append(prcp_dict)
+        prcp_list.append(prcp_dict)
 
-    return jsonify(all_precipitation)
+    return jsonify(prcp_list)
 
 @app.route("/api/v1.0/stations")
 def stations():
     session =Session(engine)
     results = session.query(Station.id,Station.station,Station.name,Station.latitude,Station.longitude,Station.elevation).order_by(Station.id).all()
     session.close()
-    all_stations = []
+    stations_list = []
     for id,station,name,latitude,longitude,elevation in results:
         station_dict = {}
         station_dict["id"] = id
@@ -63,8 +60,8 @@ def stations():
         station_dict["latitude"] = latitude
         station_dict["longitude"] = longitude
         station_dict["elevation"] = elevation
-        all_stations.append(station_dict)
-    return jsonify (all_stations)
+        stations_list.append(station_dict)
+    return jsonify (stations_list)
 
 @app.route("/api/v1.0/tobs")
 def tobs():
@@ -73,14 +70,14 @@ def tobs():
     print(active_stations)
     results = session.query(Measurement.station,Measurement.date,Measurement.tobs).filter(Measurement.station =="USC00519281").filter(func.strftime('%Y-%m-%d',Measurement.date) >= year_ago).order_by(Measurement.date).all()
     session.close()
-    active_station = []
+    active_station_list = []
     for station,date,tobs in results:
-        active_station_temp = {}
-        active_station_temp["station"] = station
-        active_station_temp["date"] = date
-        active_station_temp["tobs"]= tobs
-        active_station.append(active_station_temp)
-    return jsonify(active_station)
+        active_station_dict = {}
+        active_station_dict["station"] = station
+        active_station_dict["date"] = date
+        active_station_dict["tobs"]= tobs
+        active_station_list.append(active_station_dict)
+    return jsonify(active_station_list)
 
 @app.route("/api/v1.0/<start>")
 def start_date(start):
