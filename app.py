@@ -18,7 +18,7 @@ Station = Base.classes.station
 
 
 year_ago = dt.date(2017,8,23) - dt.timedelta(days =365)
-print(year_ago)
+# print(year_ago)
 
 #flask
 app = Flask(__name__)
@@ -71,16 +71,30 @@ def tobs():
     session = Session(engine)
     active_stations = session.query(Measurement.station,func.count(Measurement.station)).group_by(Measurement.station).order_by(func.count(Measurement.station).desc()).first()
     print(active_stations)
-    results = session.query(Measurement.date,Measurement.tobs).filter(Measurement.station =="USC00519281").filter(func.strftime('%Y-%m-%d',Measurement.date) >= year_ago).order_by(Measurement.date).all()
+    results = session.query(Measurement.station,Measurement.date,Measurement.tobs).filter(Measurement.station =="USC00519281").filter(func.strftime('%Y-%m-%d',Measurement.date) >= year_ago).order_by(Measurement.date).all()
     session.close()
     active_station = []
-    for date,tobs in results:
+    for station,date,tobs in results:
         active_station_temp = {}
+        active_station_temp["station"] = station
         active_station_temp["date"] = date
         active_station_temp["tobs"]= tobs
         active_station.append(active_station_temp)
     return jsonify(active_station)
 
+@app.route("/api/v1.0/<start>")
+def start_date(start):
+    session = Session(engine)
+    start_date = session.query(Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date >= start).group_by(Measurement.date).order_by(Measurement.date).all()
+    session.close()
+    return jsonify(start_date)
+
+@app.route("/api/v1.0/<start>/<end>")
+def start_end_date(start,end):
+    session = Session(engine)
+    start_end_date = session.query(Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).order_by(Measurement.date).all()
+    session.close()
+    return jsonify(start_end_date)
 
 
 if __name__ == "__main__":
