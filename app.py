@@ -44,7 +44,7 @@ def precipitation():
     for date,prcp in results:
         prcp_dict = {}
         prcp_dict["date"]= date
-        prcp_dict["prcp"] = prcp
+        prcp_dict["precipitation(inches)"] = prcp
         all_precipitation.append(prcp_dict)
 
     return jsonify(all_precipitation)
@@ -87,14 +87,30 @@ def start_date(start):
     session = Session(engine)
     start_date = session.query(Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date >= start).group_by(Measurement.date).order_by(Measurement.date).all()
     session.close()
-    return jsonify(start_date)
+    start_date_list = []
+    for date,min_temp,max_temp,avg_temp in start_date:
+        start_date_dict = {}
+        start_date_dict["Date"] = date
+        start_date_dict["Min_temp"] = min_temp
+        start_date_dict["Max_temp"] = max_temp
+        start_date_dict["Avg_temp"] = round(avg_temp,2)
+        start_date_list.append(start_date_dict)
+    return jsonify(start_date_list)
 
 @app.route("/api/v1.0/<start>/<end>")
 def start_end_dates(start,end):
     session = Session(engine)
     start_end_dates = session.query(Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).order_by(Measurement.date).all()
     session.close()
-    return jsonify(start_end_dates)
+    start_end_date_list = []
+    for date,min_temp,max_temp,avg_temp in start_end_dates:
+        start_end_date_dict = {}
+        start_end_date_dict["Date"] = date
+        start_end_date_dict["Min_temp"] = min_temp
+        start_end_date_dict["Max_temp"] = max_temp
+        start_end_date_dict["Avg_temp"] = round(avg_temp,2)
+        start_end_date_list.append(start_end_date_dict)
+    return jsonify(start_end_date_list)
 
 
 if __name__ == "__main__":
