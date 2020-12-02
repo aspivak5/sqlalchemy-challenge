@@ -20,6 +20,7 @@ year_ago = dt.date(2017,8,23) - dt.timedelta(days =365)
 #flask
 app = Flask(__name__)
 
+#set up home route
 @app.route("/")
 def welcome():
     return(
@@ -30,6 +31,7 @@ def welcome():
         f"/api/v1.0/<start>(enter date as YYYY-MM-DD)<br/>"
         f"/api/v1.0/<start>/<end>(enter start and end date as YYYY-MM-DD/YYYY-MM-DD)"
     )
+#setup precipitation route
 @app.route("/api/v1.0/precipitation")
 def precipitation():
     session = Session(engine)
@@ -46,6 +48,7 @@ def precipitation():
 
     return jsonify(prcp_list)
 
+#setup stations route
 @app.route("/api/v1.0/stations")
 def stations():
     session =Session(engine)
@@ -63,6 +66,7 @@ def stations():
         stations_list.append(station_dict)
     return jsonify (stations_list)
 
+#setup tobs route
 @app.route("/api/v1.0/tobs")
 def tobs():
     session = Session(engine)
@@ -79,6 +83,7 @@ def tobs():
         active_station_list.append(active_station_dict)
     return jsonify(active_station_list)
 
+#setup start date route for selected date
 @app.route("/api/v1.0/<start>")
 def start_date(start):
     session = Session(engine)
@@ -94,6 +99,7 @@ def start_date(start):
         start_date_list.append(start_date_dict)
     return jsonify(start_date_list)
 
+#setup start and end date route for selected dates
 @app.route("/api/v1.0/<start>/<end>")
 def start_end_dates(start,end):
     session = Session(engine)
