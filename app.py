@@ -1,6 +1,5 @@
 import numpy as np
 import datetime as dt
-import pandas as pd
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -24,12 +23,12 @@ app = Flask(__name__)
 @app.route("/")
 def welcome():
     return(
-        f"Welcome! Here are the available routes:<br/>"
-        f"/api/v1.0/precipitation<br/>"
-        f"/api/v1.0/stations<br/>"
-        f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start>(enter date as YYYY-MM-DD)<br/>"
-        f"/api/v1.0/<start>/<end>(enter start and end date as YYYY-MM-DD/YYYY-MM-DD)"
+        "Welcome! Here are the available routes:<br/>"
+        "/api/v1.0/precipitation<br/>"
+        "/api/v1.0/stations<br/>"
+        "/api/v1.0/tobs<br/>"
+        "/api/v1.0/<start>(enter date as YYYY-MM-DD)<br/>"
+        "/api/v1.0/<start>/<end>(enter start and end date as YYYY-MM-DD/YYYY-MM-DD)"
     )
 #setup precipitation route
 @app.route("/api/v1.0/precipitation")
